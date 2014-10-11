@@ -105,3 +105,15 @@ impl<'a, R: Reader> LineReader<'a, R> {
     }
 
 }
+
+pub fn count_lines<'a, R: Reader> (mut r: LineReader<'a, R>) -> IoResult<uint> {
+    let mut lines = 0u;
+    loop {
+        match r.read_line() {
+            Ok(_) => lines += 1,
+            Err(ref e) if e.kind == EndOfFile => break,
+            Err(e) => return Err(e),
+        }
+    }
+    Ok(lines)
+}
