@@ -1,5 +1,3 @@
-#![allow(dead_code)]
-
 use std::io::{IoResult, EndOfFile, IoError};
 use bytes;
 
@@ -73,16 +71,14 @@ impl<'a, R: Reader> LineReader<'a, R> {
             let b = self.buf.slice(self.pos,self.cap);
             match bytes::index(b, byte) {
                 Some(i) => {
-                    if !self.block.is_empty() {
-                        self.block.push_all(b.slice_to(i+1));
-                    }
                     self.consumed = i+1;
-                    // ideally would return directly from here either
-                    // referencing 'b' or 'self.block' but the borrow
-                    // checker'd be stepping in :/ ... so instead, we
-                    // break out of the loop and evaluate what to 
-                    // return based on the emptiness of 'self.block'
-                    break;
+                    let b = if self.block.is_empty() {
+                        self.buf.slice(self.pos, (self.pos+i+1))
+                    } else {
+                        self.block.push_all(b.slice_to(i+1));
+                        self.block.as_slice()
+                    };
+                    return Ok(b);
                 }
                 None => {
                     self.block.push_all(b);
@@ -91,12 +87,6 @@ impl<'a, R: Reader> LineReader<'a, R> {
                 }
             }
 
-        }
-
-        if self.block.is_empty() {
-            Ok(self.buf.slice(self.pos, (self.pos+self.consumed)))
-        } else {
-            Ok(self.block.as_slice())
         }
     }
 
