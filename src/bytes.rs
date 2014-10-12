@@ -1,10 +1,12 @@
 #[cfg(not(target_arch = "x86_64"))]
+#[inline]
 /// Finds the index of the given 'needle' in 'haystack'.
 pub fn index(haystack: &[u8], needle: u8) -> Option<uint> {
     haystack.iter().position(|&h| h == needle)
 }
 
 #[cfg(target_arch = "x86_64")]
+#[inline(never)]
 /// Finds the index of the given 'needle' in 'haystack'.
 pub fn index(x: &[u8], b: u8) -> Option<uint> {
     let mut start = x.as_ptr();
