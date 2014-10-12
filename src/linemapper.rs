@@ -30,9 +30,9 @@ pub fn map_lines<R: Buffer>(mut r: R, f: |&[u8]| -> bool) -> IoResult<()> {
             Some(i) => {
                 {
                     let b = if line_start.is_empty() {
-                        b.slice_to(i+1)
+                        b[..i+1]
                     } else {
-                        line_start.push_all(b.slice_to(i+1));
+                        line_start.push_all(b[..i+1]);
                         line_start.as_slice()
                     };
                     if !f(b) {

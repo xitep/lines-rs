@@ -68,14 +68,14 @@ impl<'a, R: Reader> LineReader<'a, R> {
 
             // note: we're dealing here with buf, pos, cap directly
             // to avoid the mutability checker from getting in our way
-            let b = self.buf.slice(self.pos,self.cap);
+            let b = self.buf[self.pos..self.cap];
             match bytes::index(b, byte) {
                 Some(i) => {
                     self.consumed = i+1;
                     let b = if self.block.is_empty() {
-                        self.buf.slice(self.pos, (self.pos+i+1))
+                        self.buf[self.pos .. self.pos+self.consumed]
                     } else {
-                        self.block.push_all(b.slice_to(i+1));
+                        self.block.push_all(b[..self.consumed]);
                         self.block.as_slice()
                     };
                     return Ok(b);

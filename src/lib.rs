@@ -1,4 +1,5 @@
 #![feature(asm)]
+#![feature(slicing_syntax)]
 
 #[unstable]
 pub mod bytes;

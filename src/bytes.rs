@@ -95,6 +95,6 @@ fn test_index() {
 
 #[test]
 fn test_index_non16b_start() {
-    let xs = Vec::<u8>::from_fn(20, |i| (i+1) as u8);
-    assert_eq!(index(xs.slice_from(1), 20), Some(18));
+    let xs = Vec::<u8>::from_fn(100, |i| (i+1) as u8);
+    assert_eq!(index(xs[1..], 20), Some(18));
 }
