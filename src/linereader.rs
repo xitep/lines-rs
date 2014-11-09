@@ -2,13 +2,12 @@ use std::io::{IoResult, EndOfFile, IoError};
 use bytes;
 
 pub struct LineReader<'a, R> {
+    block: Vec<u8>,
+
     inner: R,
     buf: Vec<u8>,
     pos: uint,
     cap: uint,
-
-    consumed: uint,
-    block: Vec<u8>,
 }
 
 static DEFAULT_BUF_SIZE: uint = 64 * 1024;
@@ -19,13 +18,12 @@ impl<'a, R: Reader> LineReader<'a, R> {
         let mut buf = Vec::with_capacity(cap);
         unsafe { buf.set_len(cap); }
         LineReader {
+            block: Vec::new(),
+
             inner: inner,
             buf: buf,
             pos: 0,
             cap: 0,
-
-            consumed: 0,
-            block: Vec::new(),
         }
     }
 
@@ -34,12 +32,12 @@ impl<'a, R: Reader> LineReader<'a, R> {
     }
 
     // private
-    fn fill_buf(&'a mut self) -> IoResult<uint> {
+    fn fill_buf(&'a mut self) -> IoResult<()> {
         if self.pos == self.cap {
             self.cap = try!(self.inner.read(self.buf[mut]));
             self.pos = 0;
         }
-        Ok(self.cap-self.pos)
+        Ok(())
     }
 
     fn read_until(&'a mut self, byte: u8) -> IoResult<&'a [u8]> {
@@ -47,49 +45,44 @@ impl<'a, R: Reader> LineReader<'a, R> {
         unsafe { self.block.set_len(0); }
 
         loop {
-
-            // is there anything we have consumed the last time
-            // read_until was called? if so, do actually consume
-            // it now; we do this here in place to work around
-            // the mutability checker
-            self.pos += self.consumed;
-            self.consumed = 0;
-
             // ensure we have data to process
-            let avail = match self.fill_buf() {
-                Ok(n) => n,
-                Err(IoError{kind: EndOfFile, ..}) if !self.block.is_empty() => 0,
+            match self.fill_buf() {
+                Ok(_) => {},
+                Err(e@IoError{kind: EndOfFile, ..}) => {
+                    return if self.block.is_empty() {
+                        Err(e)
+                    } else {
+                        Ok(self.block.as_slice())
+                    };
+                }
                 Err(e) => return Err(e),
             };
-
-            if avail == 0 {
-                return Ok(self.block.as_slice());
-            }
 
             // note: we're dealing here with buf, pos, cap directly
             // to avoid the mutability checker from getting in our way
             let b = self.buf[self.pos..self.cap];
             match bytes::index(b, byte) {
-                Some(i) => {
-                    self.consumed = i+1;
+                Some(mut i) => {
+                    i += 1;
                     let b = if self.block.is_empty() {
-                        self.buf[self.pos .. self.pos+self.consumed]
+                        self.buf[self.pos .. self.pos+i]
                     } else {
-                        self.block.push_all(b[..self.consumed]);
+                        self.block.push_all(b[..i]);
                         self.block.as_slice()
                     };
+                    self.pos += i;
                     return Ok(b);
                 }
                 None => {
                     self.block.push_all(b);
-                    self.consumed = b.len();
+                    self.pos += b.len();
                     // continue looping
                 }
             }
-
         }
     }
 
+    #[inline]
     pub fn read_line(&'a mut self) -> IoResult<&'a [u8]> {
         self.read_until(b'\n')
     }

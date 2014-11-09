@@ -42,7 +42,7 @@ fn test_linereader_lines() {
                 assert_eq!(expected[i], String::from_utf8_lossy(line).as_slice());
             }
             Err(ref e) if e.kind == EndOfFile => break,
-            Err(e) => fail!(e),
+            Err(e) => panic!(e),
         }
         i += 1;
     }
@@ -57,6 +57,8 @@ fn test_linemapper_linecount() {
 #[test]
 fn test_linereader_linecount() {
     let r = BufReader::new(TEN_LINES.as_bytes());
-    let r = linereader::LineReader::new(r);
+    // ~ use very small capacity to trigger the overflow 
+    // logic inside LineReader
+    let r = linereader::LineReader::with_capacity(4, r);
     assert_eq!(Ok(10u), linereader::count_lines(r));
 }
