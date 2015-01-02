@@ -75,17 +75,17 @@ end:"
 
 #[test]
 fn test_index_byte_not_found() {
-    let xs = Vec::<u8>::from_fn(1024, |i| ((i + 1) % 255) as u8);
+    let xs: Vec<u8> = range(1i, 1025).map(|i| (i % 255) as u8).collect();
     let xs = xs.as_slice();
     assert_eq!(index(xs, 255), None);
 
     let xs = [1, 2, 3];
-    assert_eq!(index(xs, 100), None);
+    assert_eq!(index(xs[], 100), None);
 }
 
 #[test]
 fn test_index() {
-    let xs = Vec::<u8>::from_fn(200, |i| (i + 1) as u8);
+    let xs: Vec<u8> = range(1, 201).collect();
     let xs = xs.as_slice();
 
     for i in range(0, xs.len()) {
@@ -95,6 +95,6 @@ fn test_index() {
 
 #[test]
 fn test_index_non16b_start() {
-    let xs = Vec::<u8>::from_fn(100, |i| (i+1) as u8);
+    let xs: Vec<u8> = range(1, 101).collect();
     assert_eq!(index(xs[1..], 20), Some(18));
 }

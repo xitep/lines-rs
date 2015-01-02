@@ -20,15 +20,12 @@ fn test_linemapper_lines() {
     let r = BufReader::new(TEN_LINES.as_bytes());
     let mut lines = Vec::<String>::new();
     linemapper::map_lines(r, |line| {
-        let s = match String::from_utf8_lossy(line) {
-            std::str::Slice(slc) => String::from_str(slc),
-            std::str::Owned(s) => s,
-        };
-        lines.push(s);
+        lines.push(String::from_utf8_lossy(line).into_owned());
         true
     }).unwrap();
-    assert_eq!(vec!("one\n", "two\n", "three\n", "four\n", "five\n", "six\n", "seven\n", "eight\n", "nine\n", "ten"),
-               lines.iter().map(|s| s.as_slice()).collect());
+    let expected: Vec<&str> = vec!["one\n", "two\n", "three\n", "four\n", "five\n", "six\n", "seven\n", "eight\n", "nine\n", "ten"];
+    let actual: Vec<&str> = lines.iter().map(|s| s.as_slice()).collect();
+    assert_eq!(expected, actual);
 }
 
 #[test]

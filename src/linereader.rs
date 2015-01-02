@@ -14,7 +14,7 @@ static DEFAULT_BUF_SIZE: uint = 64 * 1024;
 
 impl<'a, R: Reader> LineReader<'a, R> {
 
-    pub fn with_capacity<'a>(cap: uint, inner: R) -> LineReader<'a, R> {
+    pub fn with_capacity(cap: uint, inner: R) -> LineReader<'a, R> {
         let mut buf = Vec::with_capacity(cap);
         unsafe { buf.set_len(cap); }
         LineReader {
@@ -27,14 +27,14 @@ impl<'a, R: Reader> LineReader<'a, R> {
         }
     }
 
-    pub fn new<'a>(inner: R) -> LineReader<'a, R> {
+    pub fn new(inner: R) -> LineReader<'a, R> {
         LineReader::with_capacity(DEFAULT_BUF_SIZE, inner)
     }
 
     // private
     fn fill_buf(&'a mut self) -> IoResult<()> {
         if self.pos == self.cap {
-            self.cap = try!(self.inner.read(self.buf[mut]));
+            self.cap = try!(self.inner.read(self.buf.as_mut_slice()));
             self.pos = 0;
         }
         Ok(())
