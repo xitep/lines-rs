@@ -9,7 +9,9 @@ pub fn count_lines<R: Buffer>(r: R) -> IoResult<uint> {
 
 /// Maps the given function 'f' over lines read from 'r' until either
 /// 'f' returns false or end of file is encountered.
-pub fn map_lines<R: Buffer>(mut r: R, f: |&[u8]| -> bool) -> IoResult<()> {
+pub fn map_lines<R, F>(mut r: R, mut f: F) -> IoResult<()> 
+    where R: Buffer, F: FnMut(&[u8]) -> bool
+{
     let mut line_start: Vec<u8> = Vec::new();
 
     let mut consumed = 0u;
