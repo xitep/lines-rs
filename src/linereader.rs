@@ -6,15 +6,15 @@ pub struct LineReader<'a, R> {
 
     inner: R,
     buf: Vec<u8>,
-    pos: uint,
-    cap: uint,
+    pos: usize,
+    cap: usize,
 }
 
-static DEFAULT_BUF_SIZE: uint = 64 * 1024;
+static DEFAULT_BUF_SIZE: usize = 64 * 1024;
 
 impl<'a, R: Reader> LineReader<'a, R> {
 
-    pub fn with_capacity(cap: uint, inner: R) -> LineReader<'a, R> {
+    pub fn with_capacity(cap: usize, inner: R) -> LineReader<'a, R> {
         let mut buf = Vec::with_capacity(cap);
         unsafe { buf.set_len(cap); }
         LineReader {
@@ -34,7 +34,7 @@ impl<'a, R: Reader> LineReader<'a, R> {
     // private
     fn fill_buf(&'a mut self) -> IoResult<()> {
         if self.pos == self.cap {
-            self.cap = try!(self.inner.read(self.buf.as_mut_slice()));
+            self.cap = try!(self.inner.read(&mut self.buf[]));
             self.pos = 0;
         }
         Ok(())
@@ -52,7 +52,7 @@ impl<'a, R: Reader> LineReader<'a, R> {
                     return if self.block.is_empty() {
                         Err(e)
                     } else {
-                        Ok(self.block.as_slice())
+                        Ok(&self.block[])
                     };
                 }
                 Err(e) => return Err(e),
@@ -60,15 +60,15 @@ impl<'a, R: Reader> LineReader<'a, R> {
 
             // note: we're dealing here with buf, pos, cap directly
             // to avoid the mutability checker from getting in our way
-            let b = self.buf[self.pos..self.cap];
+            let b = &self.buf[self.pos .. self.cap];
             match bytes::index(b, byte) {
                 Some(mut i) => {
                     i += 1;
                     let b = if self.block.is_empty() {
-                        self.buf[self.pos .. self.pos+i]
+                        &self.buf[self.pos .. self.pos+i]
                     } else {
-                        self.block.push_all(b[..i]);
-                        self.block.as_slice()
+                        self.block.push_all(&b[..i]);
+                        &self.block[]
                     };
                     self.pos += i;
                     return Ok(b);
@@ -89,8 +89,10 @@ impl<'a, R: Reader> LineReader<'a, R> {
 
 }
 
-pub fn count_lines<'a, R: Reader> (mut r: LineReader<'a, R>) -> IoResult<uint> {
-    let mut lines = 0u;
+pub fn count_lines<'a, R: Reader> (mut r: LineReader<'a, R>)
+    -> IoResult<usize>
+{
+    let mut lines = 0us;
     loop {
         match r.read_line() {
             Ok(_) => lines += 1,

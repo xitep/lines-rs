@@ -13,7 +13,7 @@ fn main() {
     }
 }
 
-fn process_arg(arg: &String) -> io::IoResult<uint> {
+fn process_arg(arg: &String) -> io::IoResult<usize> {
     let f = try!(io::File::open(&Path::new(arg)));
     linemapper::count_lines(io::BufferedReader::new(f))
 }

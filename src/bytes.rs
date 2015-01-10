@@ -1,31 +1,31 @@
 #[cfg(not(target_arch = "x86_64"))]
 #[inline]
 /// Finds the index of the given 'needle' in 'haystack'.
-pub fn index(haystack: &[u8], needle: u8) -> Option<uint> {
+pub fn index(haystack: &[u8], needle: u8) -> Option<usize> {
     haystack.iter().position(|&h| h == needle)
 }
 
 #[cfg(target_arch = "x86_64")]
 #[inline(never)]
 /// Finds the index of the given 'needle' in 'haystack'.
-pub fn index(x: &[u8], b: u8) -> Option<uint> {
+pub fn index(x: &[u8], b: u8) -> Option<usize> {
     let mut start = x.as_ptr();
-    let end = unsafe {start.offset(x.len() as int)};
+    let end = unsafe {start.offset(x.len() as isize)};
 
-    while start as uint % 16 != 0 && start < end {
+    while start as usize % 16 != 0 && start < end {
         unsafe {
             if *start == b {
-                return Some(start as uint - x.as_ptr() as uint);
+                return Some(start as usize - x.as_ptr() as usize);
             }
             start = start.offset(1);
         }
     }
 
-    if (end as uint - start as uint) < 16 {
+    if (end as usize - start as usize) < 16 {
         while start < end {
             unsafe {
                 if *start == b {
-                    return Some(start as uint - x.as_ptr() as uint);
+                    return Some(start as usize - x.as_ptr() as usize);
                 }
                 start = start.offset(1);
             }
@@ -66,8 +66,8 @@ end:"
         }
     }
 
-    if (start as uint) < (end as uint) {
-        Some(start as uint - x.as_ptr() as uint)
+    if (start as usize) < (end as usize) {
+        Some(start as usize - x.as_ptr() as usize)
     } else {
         None
     }
@@ -75,12 +75,11 @@ end:"
 
 #[test]
 fn test_index_byte_not_found() {
-    let xs: Vec<u8> = range(1i, 1025).map(|i| (i % 255) as u8).collect();
-    let xs = xs.as_slice();
-    assert_eq!(index(xs, 255), None);
+    let xs: Vec<u8> = range(1i32, 1025).map(|i| (i % 255) as u8).collect();
+    assert_eq!(index(&xs[], 255), None);
 
     let xs = [1, 2, 3];
-    assert_eq!(index(xs[], 100), None);
+    assert_eq!(index(&xs[], 100), None);
 }
 
 #[test]
@@ -96,5 +95,5 @@ fn test_index() {
 #[test]
 fn test_index_non16b_start() {
     let xs: Vec<u8> = range(1, 101).collect();
-    assert_eq!(index(xs[1..], 20), Some(18));
+    assert_eq!(index(&xs[1..], 20), Some(18));
 }

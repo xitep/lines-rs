@@ -1,8 +1,8 @@
 use std::io::{Buffer, IoResult, EndOfFile};
 use bytes;
 
-pub fn count_lines<R: Buffer>(r: R) -> IoResult<uint> {
-    let mut lines = 0u;
+pub fn count_lines<R: Buffer>(r: R) -> IoResult<usize> {
+    let mut lines = 0us;
     try!(map_lines(r, |_| { lines += 1; true }));
     Ok(lines)
 }
@@ -14,7 +14,7 @@ pub fn map_lines<R, F>(mut r: R, mut f: F) -> IoResult<()>
 {
     let mut line_start: Vec<u8> = Vec::new();
 
-    let mut consumed = 0u;
+    let mut consumed = 0us;
     loop {
         r.consume(consumed);
 
@@ -32,10 +32,10 @@ pub fn map_lines<R, F>(mut r: R, mut f: F) -> IoResult<()>
             Some(i) => {
                 {
                     let b = if line_start.is_empty() {
-                        b[..i+1]
+                        &b[..i+1]
                     } else {
-                        line_start.push_all(b[..i+1]);
-                        line_start.as_slice()
+                        line_start.push_all(&b[..i+1]);
+                        &line_start[]
                     };
                     if !f(b) {
                         return Ok(())
@@ -54,7 +54,7 @@ pub fn map_lines<R, F>(mut r: R, mut f: F) -> IoResult<()>
     }
 
     if ! line_start.is_empty() {
-        f(line_start.as_slice());
+        f(&line_start[]);
     }
     Ok(())
 }
