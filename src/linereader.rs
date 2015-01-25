@@ -89,16 +89,32 @@ impl<'a, R: Reader> LineReader<'a, R> {
 
 }
 
+#[macro_export]
+macro_rules! read_lines {
+    ($inp:ident in $expr:expr, $b:block) => {
+        { let ref mut r = &mut $expr;
+          loop {
+              let $inp = r.read_line();
+              match $inp {
+                  Err(::std::io::IoError{kind: ::std::io::EndOfFile, ..}) => {
+                      break
+                  }
+                  _ => { $b }
+              };
+          };
+        }
+    }
+}
+
 pub fn count_lines<'a, R: Reader> (mut r: LineReader<'a, R>)
     -> IoResult<usize>
 {
     let mut lines = 0us;
-    loop {
-        match r.read_line() {
-            Ok(_) => lines += 1,
-            Err(ref e) if e.kind == EndOfFile => break,
+    read_lines!(line in r, {
+        match line {
             Err(e) => return Err(e),
+            Ok(_) => lines += 1,
         }
-    }
+    });
     Ok(lines)
 }
