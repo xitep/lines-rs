@@ -1,11 +1,8 @@
 #![feature(asm)]
 #![feature(slicing_syntax)]
 
-#[unstable]
+#![feature(io, collections)]
+
 pub mod bytes;
-
-#[experimental]
 pub mod linemapper;
-
-#[experimental]
 pub mod linereader;

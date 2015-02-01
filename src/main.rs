@@ -1,7 +1,9 @@
+#![feature(io, os, path)]
+
 extern crate lines;
 
 use std::os;
-use std::io;
+use std::old_io::{BufferedReader, File, IoResult};
 use lines::linemapper;
 
 fn main() {
@@ -13,7 +15,7 @@ fn main() {
     }
 }
 
-fn process_arg(arg: &String) -> io::IoResult<usize> {
-    let f = try!(io::File::open(&Path::new(arg)));
-    linemapper::count_lines(io::BufferedReader::new(f))
+fn process_arg(arg: &String) -> IoResult<usize> {
+    let f = try!(File::open(&Path::new(arg)));
+    linemapper::count_lines(BufferedReader::new(f))
 }

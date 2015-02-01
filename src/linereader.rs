@@ -1,4 +1,4 @@
-use std::io::{IoResult, EndOfFile, IoError};
+use std::old_io::{IoResult, EndOfFile, IoError};
 use bytes;
 
 pub struct LineReader<'a, R> {
@@ -96,7 +96,7 @@ macro_rules! read_lines {
           loop {
               let $inp = r.read_line();
               match $inp {
-                  Err(::std::io::IoError{kind: ::std::io::EndOfFile, ..}) => {
+                  Err(::std::old_io::IoError{kind: ::std::old_io::EndOfFile, ..}) => {
                       break
                   }
                   _ => { $b }

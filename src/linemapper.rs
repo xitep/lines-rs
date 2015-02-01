@@ -1,4 +1,4 @@
-use std::io::{Buffer, IoResult, EndOfFile};
+use std::old_io::{Buffer, IoResult, EndOfFile};
 use bytes;
 
 pub fn count_lines<R: Buffer>(r: R) -> IoResult<usize> {
