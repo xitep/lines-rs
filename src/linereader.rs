@@ -1,7 +1,7 @@
 use std::old_io::{IoResult, EndOfFile, IoError};
 use bytes;
 
-pub struct LineReader<'a, R> {
+pub struct LineReader<R> {
     block: Vec<u8>,
 
     inner: R,
@@ -12,9 +12,9 @@ pub struct LineReader<'a, R> {
 
 static DEFAULT_BUF_SIZE: usize = 64 * 1024;
 
-impl<'a, R: Reader> LineReader<'a, R> {
+impl<R: Reader> LineReader<R> {
 
-    pub fn with_capacity(cap: usize, inner: R) -> LineReader<'a, R> {
+    pub fn with_capacity(cap: usize, inner: R) -> LineReader<R> {
         let mut buf = Vec::with_capacity(cap);
         unsafe { buf.set_len(cap); }
         LineReader {
@@ -27,12 +27,12 @@ impl<'a, R: Reader> LineReader<'a, R> {
         }
     }
 
-    pub fn new(inner: R) -> LineReader<'a, R> {
+    pub fn new(inner: R) -> LineReader<R> {
         LineReader::with_capacity(DEFAULT_BUF_SIZE, inner)
     }
 
     // private
-    fn fill_buf(&'a mut self) -> IoResult<()> {
+    fn fill_buf<'a>(&'a mut self) -> IoResult<()> {
         if self.pos == self.cap {
             self.cap = try!(self.inner.read(&mut self.buf[]));
             self.pos = 0;
@@ -40,7 +40,7 @@ impl<'a, R: Reader> LineReader<'a, R> {
         Ok(())
     }
 
-    fn read_until(&'a mut self, byte: u8) -> IoResult<&'a [u8]> {
+    fn read_until<'a>(&'a mut self, byte: u8) -> IoResult<&'a [u8]> {
         // ~ clear our previously delivered block - if any
         unsafe { self.block.set_len(0); }
 
@@ -83,7 +83,7 @@ impl<'a, R: Reader> LineReader<'a, R> {
     }
 
     #[inline]
-    pub fn read_line(&'a mut self) -> IoResult<&'a [u8]> {
+    pub fn read_line<'a>(&'a mut self) -> IoResult<&'a [u8]> {
         self.read_until(b'\n')
     }
 
@@ -106,7 +106,7 @@ macro_rules! read_lines {
     }
 }
 
-pub fn count_lines<'a, R: Reader> (mut r: LineReader<'a, R>)
+pub fn count_lines<R: Reader> (mut r: LineReader<R>)
     -> IoResult<usize>
 {
     let mut lines = 0us;
