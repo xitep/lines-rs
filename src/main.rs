@@ -1,4 +1,4 @@
-#![feature(io, os, path)]
+#![feature(io, os, path, core)]
 
 extern crate lines;
 
