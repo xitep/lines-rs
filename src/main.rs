@@ -1,14 +1,15 @@
-#![feature(io, os, path, core)]
+#![feature(io, path, core, env, os)]
 
 extern crate lines;
 
-use std::os;
+use std::env;
 use std::old_io::{BufferedReader, File, IoResult};
 use lines::linemapper;
 
 fn main() {
-    for arg in os::args().iter().skip(1) {
-        match process_arg(arg) {
+    for arg in env::args().skip(1) {
+        let arg = arg.into_string().unwrap();
+        match process_arg(&arg) {
             Ok(lines) => println!("{}: {}", arg, lines),
             Err(e) => println!("{}: {}", arg, e),
         }
