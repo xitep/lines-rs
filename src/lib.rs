@@ -1,5 +1,4 @@
 #![feature(asm)]
-#![feature(slicing_syntax)]
 
 #![feature(io, collections)]
 
