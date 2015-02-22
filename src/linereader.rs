@@ -34,7 +34,7 @@ impl<R: Reader> LineReader<R> {
     // private
     fn fill_buf<'a>(&'a mut self) -> IoResult<()> {
         if self.pos == self.cap {
-            self.cap = try!(self.inner.read(&mut self.buf[]));
+            self.cap = try!(self.inner.read(&mut self.buf[..]));
             self.pos = 0;
         }
         Ok(())
@@ -52,7 +52,7 @@ impl<R: Reader> LineReader<R> {
                     return if self.block.is_empty() {
                         Err(e)
                     } else {
-                        Ok(&self.block[])
+                        Ok(&self.block[..])
                     };
                 }
                 Err(e) => return Err(e),
@@ -68,7 +68,7 @@ impl<R: Reader> LineReader<R> {
                         &self.buf[self.pos .. self.pos+i]
                     } else {
                         self.block.push_all(&b[..i]);
-                        &self.block[]
+                        &self.block[..]
                     };
                     self.pos += i;
                     return Ok(b);
@@ -109,7 +109,7 @@ macro_rules! read_lines {
 pub fn count_lines<R: Reader> (mut r: LineReader<R>)
     -> IoResult<usize>
 {
-    let mut lines = 0us;
+    let mut lines = 0usize;
     read_lines!(line in r, {
         match line {
             Err(e) => return Err(e),

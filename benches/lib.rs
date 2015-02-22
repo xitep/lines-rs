@@ -1,4 +1,4 @@
-#![feature(test, io)]
+#![feature(test, old_io)]
 
 extern crate lines;
 extern crate test;
@@ -10,7 +10,7 @@ use lines::linereader;
 static LINE: &'static str = "foo bar baz quux\n";
 
 fn make_string() -> String {
-    let rep = 200us;
+    let rep = 200usize;
     let mut s = String::with_capacity(LINE.len()*rep);
     for _ in 0..rep {
         s.push_str(LINE);

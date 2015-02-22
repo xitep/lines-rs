@@ -1,4 +1,4 @@
-#![feature(io)]
+#![feature(old_io)]
 #![feature(core)]
 
 #[macro_use(read_lines)]
@@ -36,7 +36,7 @@ fn test_linemapper_lines() {
 fn test_linereader_lines() {
     let expected = ["one\n", "two\n", "three\n", "four\n", "five\n", "six\n", "seven\n", "eight\n", "nine\n", "ten"];
     let mut r = linereader::LineReader::new(BufReader::new(TEN_LINES.as_bytes()));
-    let mut i = 0us;
+    let mut i = 0usize;
     read_lines!(line in r, {
         let line = line.unwrap();
         assert_eq!(expected[i], String::from_utf8_lossy(line).as_slice());
@@ -47,7 +47,7 @@ fn test_linereader_lines() {
 #[test]
 fn test_linemapper_linecount() {
     let r = BufReader::new(TEN_LINES.as_bytes());
-    assert_eq!(Ok(10us), linemapper::count_lines(r));
+    assert_eq!(Ok(10usize), linemapper::count_lines(r));
 }
 
 #[test]
@@ -56,5 +56,5 @@ fn test_linereader_linecount() {
     // ~ use very small capacity to trigger the overflow 
     // logic inside LineReader
     let r = linereader::LineReader::with_capacity(4, r);
-    assert_eq!(Ok(10us), linereader::count_lines(r));
+    assert_eq!(Ok(10usize), linereader::count_lines(r));
 }
