@@ -83,7 +83,7 @@ impl<R: Reader> LineReader<R> {
     }
 
     #[inline]
-    pub fn read_line<'a>(&'a mut self) -> IoResult<&'a [u8]> {
+    pub fn read_line(&mut self) -> IoResult<&[u8]> {
         self.read_until(b'\n')
     }
 
