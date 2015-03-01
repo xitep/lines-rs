@@ -1,7 +1,7 @@
-use std::old_io::{Buffer, IoResult, EndOfFile};
+use std::io::{BufRead, Result};
 use bytes;
 
-pub fn count_lines<R: Buffer>(r: R) -> IoResult<usize> {
+pub fn count_lines<R: BufRead>(r: R) -> Result<usize> {
     let mut lines = 0usize;
     try!(map_lines(r, |_| { lines += 1; true }));
     Ok(lines)
@@ -9,8 +9,8 @@ pub fn count_lines<R: Buffer>(r: R) -> IoResult<usize> {
 
 /// Maps the given function 'f' over lines read from 'r' until either
 /// 'f' returns false or end of file is encountered.
-pub fn map_lines<R, F>(mut r: R, mut f: F) -> IoResult<()> 
-    where R: Buffer, F: FnMut(&[u8]) -> bool
+pub fn map_lines<R, F>(mut r: R, mut f: F) -> Result<()> 
+    where R: BufRead, F: FnMut(&[u8]) -> bool
 {
     let mut line_start: Vec<u8> = Vec::new();
 
@@ -19,13 +19,13 @@ pub fn map_lines<R, F>(mut r: R, mut f: F) -> IoResult<()>
         r.consume(consumed);
 
         let b = match r.fill_buf() {
-            Ok(b)  => b,
-            Err(ref e) if e.kind == EndOfFile => {
-                break;
-            }
-            Err(e) => {
-                return Err(e);
-            }
+            Ok(b) => {
+                if b.len() == 0 {
+                    break;
+                }
+                b
+            },
+            Err(e) => { return Err(e); }
         };
 
         match bytes::index(b, b'\n') {

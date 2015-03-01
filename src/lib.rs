@@ -1,5 +1,5 @@
 #![feature(asm)]
-#![feature(old_io,collections)]
+#![feature(io, collections)]
 
 pub mod bytes;
 pub mod linemapper;

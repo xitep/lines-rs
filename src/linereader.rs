@@ -1,4 +1,4 @@
-use std::old_io::{IoResult, EndOfFile, IoError};
+use std::io::{Read, Result};
 use bytes;
 
 pub struct LineReader<R> {
@@ -12,7 +12,7 @@ pub struct LineReader<R> {
 
 static DEFAULT_BUF_SIZE: usize = 64 * 1024;
 
-impl<R: Reader> LineReader<R> {
+impl<R: Read> LineReader<R> {
 
     pub fn with_capacity(cap: usize, inner: R) -> LineReader<R> {
         let mut buf = Vec::with_capacity(cap);
@@ -32,29 +32,25 @@ impl<R: Reader> LineReader<R> {
     }
 
     // private
-    fn fill_buf<'a>(&'a mut self) -> IoResult<()> {
+    fn fill_buf<'a>(&'a mut self) -> Result<usize> {
         if self.pos == self.cap {
             self.cap = try!(self.inner.read(&mut self.buf[..]));
             self.pos = 0;
         }
-        Ok(())
+        Ok(self.cap-self.pos)
     }
 
-    fn read_until<'a>(&'a mut self, byte: u8) -> IoResult<&'a [u8]> {
+    fn read_until<'a>(&'a mut self, byte: u8) -> Result<&'a [u8]> {
         // ~ clear our previously delivered block - if any
         unsafe { self.block.set_len(0); }
 
         loop {
             // ensure we have data to process
             match self.fill_buf() {
+                Ok(0) => {
+                    return Ok(&self.block[..]);
+                },
                 Ok(_) => {},
-                Err(e@IoError{kind: EndOfFile, ..}) => {
-                    return if self.block.is_empty() {
-                        Err(e)
-                    } else {
-                        Ok(&self.block[..])
-                    };
-                }
                 Err(e) => return Err(e),
             };
 
@@ -82,8 +78,10 @@ impl<R: Reader> LineReader<R> {
         }
     }
 
+    /// Reads the next line. Returns the empty slice if EOF is reached
+    /// and there's not more data to deliver.
     #[inline]
-    pub fn read_line(&mut self) -> IoResult<&[u8]> {
+    pub fn read_line(&mut self) -> Result<&[u8]> {
         self.read_until(b'\n')
     }
 
@@ -96,7 +94,7 @@ macro_rules! read_lines {
           loop {
               let $inp = r.read_line();
               match $inp {
-                  Err(::std::old_io::IoError{kind: ::std::old_io::EndOfFile, ..}) => {
+                  Ok(b) if b.is_empty() => {
                       break
                   }
                   _ => { $b }
@@ -106,8 +104,8 @@ macro_rules! read_lines {
     }
 }
 
-pub fn count_lines<R: Reader> (mut r: LineReader<R>)
-    -> IoResult<usize>
+pub fn count_lines<R: Read> (mut r: LineReader<R>)
+    -> Result<usize>
 {
     let mut lines = 0usize;
     read_lines!(line in r, {

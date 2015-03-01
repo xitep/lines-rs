@@ -1,10 +1,10 @@
-#![feature(old_io)]
+#![feature(io)]
 #![feature(core)]
 
 #[macro_use(read_lines)]
 extern crate lines;
 
-use std::old_io::{BufReader};
+use std::io::{BufReader};
 use lines::linemapper;
 use lines::linereader;
 
