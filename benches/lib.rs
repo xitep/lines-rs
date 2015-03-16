@@ -1,4 +1,4 @@
-#![feature(test, io)]
+#![feature(test)]
 
 extern crate lines;
 extern crate test;

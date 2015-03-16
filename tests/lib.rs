@@ -1,4 +1,3 @@
-#![feature(io)]
 #![feature(core)]
 
 #[macro_use(read_lines)]
