@@ -34,7 +34,7 @@ pub fn map_lines<R, F>(mut r: R, mut f: F) -> Result<()>
                     let b = if line_start.is_empty() {
                         &b[..i+1]
                     } else {
-                        line_start.push_all(&b[..i+1]);
+                        line_start = line_start + &b[..i+1];
                         &line_start[..]
                     };
                     if !f(b) {
@@ -47,7 +47,7 @@ pub fn map_lines<R, F>(mut r: R, mut f: F) -> Result<()>
                 consumed = i+1;
             }
             None => {
-                line_start.push_all(b);
+                line_start = line_start + b;
                 consumed = b.len();
             }
         }
