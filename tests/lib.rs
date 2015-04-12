@@ -1,5 +1,3 @@
-#![feature(core)]
-
 #[macro_use(read_lines)]
 extern crate lines;
 
@@ -27,7 +25,7 @@ fn test_linemapper_lines() {
         true
     }).unwrap();
     let expected: Vec<&str> = vec!["one\n", "two\n", "three\n", "four\n", "five\n", "six\n", "seven\n", "eight\n", "nine\n", "ten"];
-    let actual: Vec<&str> = lines.iter().map(|s| s.as_slice()).collect();
+    let actual: Vec<&str> = lines.iter().map(|s| &s[..]).collect();
     assert_eq!(expected, actual);
 }
 
@@ -38,7 +36,7 @@ fn test_linereader_lines() {
     let mut i = 0usize;
     read_lines!(line in r, {
         let line = line.unwrap();
-        assert_eq!(expected[i], String::from_utf8_lossy(line).as_slice());
+        assert_eq!(expected[i], &String::from_utf8_lossy(line)[..]);
         i += 1;
     });
 }
@@ -46,7 +44,7 @@ fn test_linereader_lines() {
 #[test]
 fn test_linemapper_linecount() {
     let r = BufReader::new(TEN_LINES.as_bytes());
-    assert_eq!(Ok(10usize), linemapper::count_lines(r));
+    assert_eq!(10usize, linemapper::count_lines(r).unwrap());
 }
 
 #[test]
@@ -55,5 +53,5 @@ fn test_linereader_linecount() {
     // ~ use very small capacity to trigger the overflow 
     // logic inside LineReader
     let r = linereader::LineReader::with_capacity(4, r);
-    assert_eq!(Ok(10usize), linereader::count_lines(r));
+    assert_eq!(10usize, linereader::count_lines(r).unwrap());
 }

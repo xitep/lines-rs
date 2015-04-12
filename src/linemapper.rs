@@ -19,7 +19,8 @@ pub fn count_lines<R: BufRead>(r: R) -> Result<usize> {
 /// # Examples
 /// Count the number of lines with more than 80 bytes:
 ///
-/// ```
+/// ```text
+///    let r: BufRead = ...;
 ///    let mut nl = 0usize;
 ///    map_lines(r, |line| {
 ///        if line.len() > 80 {

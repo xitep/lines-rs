@@ -24,7 +24,8 @@ use bytes;
 /// Iterating over all the lines of a given `Read` can be implemented
 /// as follows:
 ///
-/// ```
+/// ```text
+/// let r: Read = ...;
 /// let mut lr = LineReader::new(r);
 /// loop {
 ///   match lr.read_line() {
@@ -39,14 +40,15 @@ use bytes;
 /// by this module.  The macro will loop over the lines and take care
 /// of aborting the loop when encountering end-of-file.
 ///
-/// ```
+/// ```text
+/// let r: Read = ...;
 /// let mut reader = LineReader::new(r);
 /// read_lines(line in reader, {
 ///   match line {
 ///     Ok(line) => { /* process line bytes; line is never empty */ }
 ///     Err(e)   => { /* i/o error occured */ }
 ///   }
-/// }
+/// });
 /// ```
 pub struct LineReader<R> {
     block: Vec<u8>,
