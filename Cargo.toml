@@ -2,4 +2,7 @@
 
 name = "lines"
 version = "0.0.1"
-authors = []
+authors = ["Petr Novotnik <pnovotnik@googlemail.com>"]
+license = "MIT"
+keywords = ["streaming"]
+repository = "https://github.com/xitep/lines-rs.git"
