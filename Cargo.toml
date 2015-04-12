@@ -1,6 +1,7 @@
 [package]
 
 name = "lines"
+description = "Utililities for iterating readers efficiently line-by-line."
 version = "0.0.1"
 authors = ["Petr Novotnik <pnovotnik@googlemail.com>"]
 license = "MIT"
