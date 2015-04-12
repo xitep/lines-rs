@@ -1,14 +1,33 @@
+//! Implements line-by-line iteration over a given reader by mapping a
+//! user defined function over each line.
+
 use std::io::{BufRead, Result};
 use bytes;
 
+/// Counts the number of lines in the given reader by utilizing
+/// `map_lines`.
 pub fn count_lines<R: BufRead>(r: R) -> Result<usize> {
     let mut lines = 0usize;
     try!(map_lines(r, |_| { lines += 1; true }));
     Ok(lines)
 }
 
-/// Maps the given function 'f' over lines read from 'r' until either
-/// 'f' returns false or end of file is encountered.
+/// Maps the given function `f` over lines read from `r` until either
+/// the function returns `false`, the end of stream is encountered, or
+/// the underlying reader returns an error.
+///
+/// # Examples
+/// Count the number of lines with more than 80 bytes:
+///
+/// ```
+///    let mut nl = 0usize;
+///    map_lines(r, |line| {
+///        if line.len() > 80 {
+///            nl += 1;
+///        }
+///        true
+///    });
+///    println!("long lines: {}", nl);
 pub fn map_lines<R, F>(mut r: R, mut f: F) -> Result<()> 
     where R: BufRead, F: FnMut(&[u8]) -> bool
 {
