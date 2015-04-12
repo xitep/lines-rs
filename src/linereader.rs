@@ -160,18 +160,30 @@ macro_rules! read_lines {
     }
 }
 
-// XXX try_read_lines!(..)
+/// Provides a convenient way to iterate over all lines through a
+/// `LineReader` wrapping a `try!` on the invocation to
+/// `LineReader::read_line`.  Hence, the identifer representing the
+/// read line will be directly of type `&[u8]`.
+#[macro_export]
+macro_rules! try_read_lines {
+    ($inp:ident in $expr:expr, $b:block) => {
+        { let ref mut r = &mut $expr;
+          loop {
+              let $inp = try!(r.read_line());
+              if $inp.is_empty() { break; }
+              else { $b };
+          };
+        }
+    }
+}
 
 /// Counts the lines read through the given `LineReader`.
 pub fn count_lines<R: Read> (mut r: LineReader<R>)
     -> Result<usize>
 {
     let mut lines = 0usize;
-    read_lines!(line in r, {
-        match line {
-            Err(e) => return Err(e),
-            Ok(_) => lines += 1,
-        }
+    try_read_lines!(line in r, {
+        lines += 1;
     });
     Ok(lines)
 }
