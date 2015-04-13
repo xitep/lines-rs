@@ -14,7 +14,7 @@ Instead, we can ...
 2. ... locate a line in the processed stream and copy that to the mentioned
    buffer ...
 3. ... lend the buffer to client code for "some number crunching," and ...
-4. afterwards repeat locating the next line in the input at step 2.
+4. ... afterwards repeat locating the next line in the input at step 2.
 
 By re-using a buffer and having the client decide whether or not to
 make a copy of the read line we can gain significant performance gains
@@ -52,6 +52,7 @@ fn main() {
 
 ```
 
-There are certain limitations to data that the library can
-process. For more information, please refer to the generated
-documentation of the library.
+There are certain limitations to the data that the library can
+process.  Namely, a newline is assumed to be defined by '\n'.  For
+more information, please refer to the generated documentation of the
+library.
