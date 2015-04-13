@@ -1,7 +1,7 @@
 lines - streaming through text line by line
 ===========================================
 
-[![Build Status](https://travis-ci.org/netvl/xml-rs.svg?branch=master)](https://travis-ci.org/netvl/xml-rs)
+[![Build Status](https://travis-ci.org/xitep/lines-rs.svg?branch=master)](https://travis-ci.org/xitep/lines-rs)
 
 `lines` is a small library to efficiently parse a text files line by
 line while avoiding unnecessary memory allocations.
