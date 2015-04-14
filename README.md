@@ -3,7 +3,7 @@ lines - streaming through text line by line
 
 [![Build Status](https://travis-ci.org/xitep/lines-rs.svg?branch=master)](https://travis-ci.org/xitep/lines-rs)
 
-`lines` is a small library to efficiently parse a text files line by
+`lines` is a small library to efficiently parse text files line by
 line while avoiding unnecessary memory allocations.
 
 Typically, processing log files or other line oriented file formats,
@@ -17,7 +17,7 @@ Instead, we can ...
 4. ... afterwards repeat locating the next line in the input at step 2.
 
 By re-using a buffer and having the client decide whether or not to
-make a copy of the read line we can gain significant performance gains
+make a copy of the read line, we can gain significant performance wins
 in certain situations.
 
 Usage
