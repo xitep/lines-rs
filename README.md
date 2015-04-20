@@ -2,6 +2,7 @@ lines - streaming through text line by line
 ===========================================
 
 [![Build Status](https://travis-ci.org/xitep/lines-rs.svg?branch=master)](https://travis-ci.org/xitep/lines-rs)
+[![](http://meritbadge.herokuapp.com/lines)](https://crates.io/crates/lines)
 
 `lines` is a small library to efficiently parse text files line by
 line while avoiding unnecessary memory allocations.
