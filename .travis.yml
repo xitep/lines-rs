@@ -1,5 +1,5 @@
 language: rust
-rust: 1.0.0-beta.3
+rust: 1.0.0-beta.4
 after_success: |
   [ $TRAVIS_BRANCH = master ] && \
   [ $TRAVIS_PULL_REQUEST = false ] && \
