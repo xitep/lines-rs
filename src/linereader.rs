@@ -25,6 +25,8 @@ use bytes;
 /// as follows:
 ///
 /// ```text
+/// extern crate lines;
+///
 /// let r: Read = ...;
 /// let mut lr = LineReader::new(r);
 /// loop {
@@ -41,6 +43,9 @@ use bytes;
 /// of aborting the loop when encountering end-of-file.
 ///
 /// ```text
+/// #[macro_use(read_lines)]
+/// extern crate lines;
+///
 /// let r: Read = ...;
 /// let mut reader = LineReader::new(r);
 /// read_lines(line in reader, {
@@ -163,9 +168,9 @@ macro_rules! read_lines {
 }
 
 /// Provides a convenient way to iterate over all lines through a
-/// `LineReader` wrapping a `try!` on the invocation to
-/// `LineReader::read_line`.  Hence, the identifer representing the
-/// read line will be directly of type `&[u8]`.
+/// `LineReader` wrapping the invocation to `LineReader::read_line`
+/// with a `try!`. Hence, the identifer representing the read line
+/// will be directly of type `&[u8]`.
 #[macro_export]
 macro_rules! try_read_lines {
     ($inp:ident in $expr:expr, $b:block) => {
