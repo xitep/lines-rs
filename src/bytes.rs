@@ -1,7 +1,9 @@
+extern crate memchr;
+
 #[inline]
 /// Finds the index of the given 'needle' in 'haystack'.
 pub fn index(haystack: &[u8], needle: u8) -> Option<usize> {
-    haystack.iter().position(|&h| h == needle)
+    memchr::memchr(needle, haystack)
 }
 
 #[test]
