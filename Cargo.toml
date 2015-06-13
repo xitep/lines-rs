@@ -8,3 +8,6 @@ license = "MIT"
 keywords = ["streaming"]
 repository = "https://github.com/xitep/lines-rs.git"
 documentation = "https://xitep.github.io/lines-rs/"
+
+[dependencies]
+memchr = "*"
