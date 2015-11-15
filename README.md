@@ -54,6 +54,6 @@ fn main() {
 ```
 
 There are certain limitations to the data that the library can
-process.  Namely, a newline is assumed to be defined by '\n'.  For
-more information can be found in the [generated
+process.  Namely, a newline is assumed to be defined by '\n'.  More
+information can be found in the [generated
 documentation](https://xitep.github.io/lines-rs/) of the library.
