@@ -2,7 +2,7 @@
 
 name = "lines"
 description = "Utililities for iterating readers efficiently line-by-line."
-version = "0.0.3"
+version = "0.0.4"
 authors = ["Petr Novotnik <pnovotnik@googlemail.com>"]
 license = "MIT"
 keywords = ["streaming"]
@@ -10,4 +10,4 @@ repository = "https://github.com/xitep/lines-rs.git"
 documentation = "https://xitep.github.io/lines-rs/"
 
 [dependencies]
-memchr = "*"
+memchr = "0.1"

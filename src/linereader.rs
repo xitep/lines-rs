@@ -122,14 +122,14 @@ impl<R: Read> LineReader<R> {
                         &self.buf[self.pos .. self.pos+i]
                     } else {
                         let b: &[u8] = &b[..i];
-                        self.block.extend(b.iter().cloned());
+                        self.block.extend_from_slice(b);
                         &self.block[..]
                     };
                     self.pos += i;
                     return Ok(b);
                 }
                 None => {
-                    self.block.extend(b.iter().cloned());
+                    self.block.extend_from_slice(b);
                     self.pos += b.len();
                     // continue looping
                 }
