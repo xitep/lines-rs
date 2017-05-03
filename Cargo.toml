@@ -10,4 +10,4 @@ repository = "https://github.com/xitep/lines-rs.git"
 documentation = "https://xitep.github.io/lines-rs/"
 
 [dependencies]
-memchr = "0.1"
+memchr = "1.0"
