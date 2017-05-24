@@ -2,12 +2,12 @@
 
 name = "lines"
 description = "Utililities for iterating readers efficiently line-by-line."
-version = "0.0.5"
+version = "0.0.6"
 authors = ["Petr Novotnik <pnovotnik@googlemail.com>"]
 license = "MIT"
 keywords = ["streaming", "text"]
 repository = "https://github.com/xitep/lines-rs.git"
-documentation = "https://xitep.github.io/lines-rs/"
+documentation = "https://docs.rs/lines/"
 
 [dependencies]
 memchr = "1.0"
