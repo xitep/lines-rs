@@ -90,7 +90,7 @@ impl<R: Read> LineReader<R> {
     }
 
     // private
-    fn fill_buf<'a>(&'a mut self) -> Result<usize> {
+    fn fill_buf(&mut self) -> Result<usize> {
         if self.pos == self.cap {
             self.cap = try!(self.inner.read(&mut self.buf[..]));
             self.pos = 0;
@@ -98,7 +98,7 @@ impl<R: Read> LineReader<R> {
         Ok(self.cap-self.pos)
     }
 
-    fn read_until<'a>(&'a mut self, byte: u8) -> Result<&'a [u8]> {
+    fn read_until(&mut self, byte: u8) -> Result<&[u8]> {
         // ~ clear our previously delivered block - if any
         unsafe { self.block.set_len(0); }
 
@@ -153,7 +153,7 @@ impl<R: Read> LineReader<R> {
 #[macro_export]
 macro_rules! read_lines {
     ($inp:ident in $expr:expr, $b:block) => {
-        { let ref mut r = &mut $expr;
+        { let r = &mut $expr;
           loop {
               let $inp = r.read_line();
               match $inp {
@@ -174,7 +174,7 @@ macro_rules! read_lines {
 #[macro_export]
 macro_rules! try_read_lines {
     ($inp:ident in $expr:expr, $b:block) => {
-        { let ref mut r = &mut $expr;
+        { let r = &mut $expr;
           loop {
               let $inp = try!(r.read_line());
               if $inp.is_empty() { break; }

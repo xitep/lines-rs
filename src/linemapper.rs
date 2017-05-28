@@ -40,7 +40,7 @@ pub fn map_lines<R, F>(mut r: R, mut f: F) -> Result<()>
 
         let b = match r.fill_buf() {
             Ok(b) => {
-                if b.len() == 0 {
+                if b.is_empty() {
                     break;
                 }
                 b
@@ -54,7 +54,7 @@ pub fn map_lines<R, F>(mut r: R, mut f: F) -> Result<()>
                     let b = if line_start.is_empty() {
                         &b[..i+1]
                     } else {
-                        line_start.extend_from_slice((&b[..i+1]));
+                        line_start.extend_from_slice(&b[..i+1]);
                         &line_start[..]
                     };
                     if !f(b) {
